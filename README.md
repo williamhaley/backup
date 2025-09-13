@@ -4,6 +4,14 @@ Semi-complicated scripts, applications, and other helpers used for backing up my
 
 # Install
 
+## Go
+
+```
+sudo GOBIN=/usr/local/bin go install -v github.com/williamhaley/backup/cmd/backup@latest
+```
+
+## From Source
+
 ```
 make
 sudo make install
