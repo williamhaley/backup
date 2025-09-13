@@ -13,6 +13,8 @@ group_name = "backups"
 
 subprocess.run(["groupadd", group_name])
 
+# TODO Validate no duplicate `name` entries or the last one clobbers earlier ones.
+
 with open(config_file_path, "rb") as config_file:
     data = tomllib.load(config_file)
     for backup in data['backups']:
