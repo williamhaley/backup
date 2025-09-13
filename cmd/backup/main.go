@@ -1,12 +1,13 @@
 package main
 
 import (
-	"backup/config"
-	"backup/filters"
-	"backup/rsync"
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/williamhaley/backup/config"
+	"github.com/williamhaley/backup/filters"
+	"github.com/williamhaley/backup/rsync"
 )
 
 func main() {

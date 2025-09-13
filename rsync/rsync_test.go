@@ -1,9 +1,10 @@
 package rsync_test
 
 import (
-	"backup/config"
-	"backup/rsync"
 	"testing"
+
+	"github.com/williamhaley/backup/config"
+	"github.com/williamhaley/backup/rsync"
 )
 
 var _ = func() bool {

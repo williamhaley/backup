@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os/exec"
 
-	"backup/config"
+	"github.com/williamhaley/backup/config"
 )
 
 func Command(config *config.Config, filtersFilePath string) *exec.Cmd {
