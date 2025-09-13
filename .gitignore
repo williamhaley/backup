@@ -1,1 +1,2 @@
-b2-linux
+.build
+server/config.toml

@@ -1,0 +1,9 @@
+UsePAM yes
+
+Match Group backups
+    ChrootDirectory /chroots/%u
+    X11Forwarding no
+    AllowTcpForwarding no
+    AuthorizedKeysFile /authorized_keys/%u
+    PubkeyAuthentication yes
+    PasswordAuthentication no

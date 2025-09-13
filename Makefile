@@ -1,6 +1,8 @@
-all:
-	curl -L -O https://github.com/Backblaze/B2_Command_Line_Tool/releases/latest/download/b2-linux
+build:
+	go build -o .build/backup cmd/cli/main.go
 
 install:
-	install -Dm 0755 b2-linux /usr/local/bin/backblaze-cli
-	install -Dm 0755 backup.sh /usr/local/bin/backup.sh
+	install -m 0755 .build/backup /usr/local/bin/backup
+
+test:
+	go test ./...

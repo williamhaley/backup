@@ -1,0 +1,11 @@
+destination: <backup-name>@<backup-server>:/
+destination_key: /etc/backup/backup.key
+
+sources:
+    - /etc
+    - /home/my-user/.ssh
+    - /home/my-user/.thunderbird
+    - /home/my-user/Documents
+    - /home/my-user/Downloads
+    - /home/my-user/Music
+    - /home/my-user/Pictures
