@@ -53,11 +53,16 @@ mkdir -p /chroot-template/{bin,etc,lib,lib64}
 
 cp_app sh
 cp_app bash
+cp_app ls
 cp_app rsync
 cp_app sudo
 cp_app python3
 cp_app groupadd
 cp_app useradd
+cp_app passwd
+cp_app id
+cp_app su
+cp_app whoami
 
 ln -s "$(readlink -f "$(which sh)")" /chroot-template/bin/sh
 
@@ -72,9 +77,12 @@ RUN apt-get update && apt-get install -y openssh-server openssl python3 rsync
 
 COPY --from=chroot-builder /chroot-template /chroot-template
 
-COPY sshd_config /etc/ssh/
+COPY sshd_config /etc/ssh/sshd_config.d/backups.conf
 COPY config.toml /config.toml
 COPY cmd.py /usr/local/bin/
+COPY allocate-backup.sh /usr/local/bin/
+
+ENV PYTHONUNBUFFERED=1
 
 # cmd.py and all the chroots and users are ephemeral. Only the data is persisted and mounted at run time.
 CMD ["/usr/bin/python3", "-u", "/usr/local/bin/cmd.py", "/config.toml"]

@@ -18,7 +18,7 @@ func Command(config *config.Config, filtersFilePath string) *exec.Cmd {
 		"--delete-excluded",
 	}
 
-	args = append(args, "-e", fmt.Sprintf("ssh -p 2222 -i %s -o \"StrictHostKeychecking=no\" -o \"IdentityAgent=none\" -o \"UserKnownHostsFile=/dev/null\"", config.DestinationKey))
+	args = append(args, "-e", fmt.Sprintf("ssh -p %s -i %s -o \"StrictHostKeychecking=no\" -o \"IdentityAgent=none\" -o \"UserKnownHostsFile=/dev/null\"", config.Port(), config.Key))
 
 	if config.IsDryRun() {
 		args = append(args, "--dry-run")
@@ -30,7 +30,7 @@ func Command(config *config.Config, filtersFilePath string) *exec.Cmd {
 
 	args = append(args, "--filter", fmt.Sprintf("merge %s", filtersFilePath))
 
-	args = append(args, "/", config.Destination)
+	args = append(args, "/", fmt.Sprintf("%s@%s:/", config.Name, config.Address))
 
 	return exec.Command(rsync, args...)
 }

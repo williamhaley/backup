@@ -1,9 +1,10 @@
-UsePAM yes
+LogLevel INFO
+PubkeyAuthentication yes
+PasswordAuthentication no
+ChallengeResponseAuthentication no
 
-Match Group backups
+Match Group backup-client
     ChrootDirectory /chroots/%u
     X11Forwarding no
-    AllowTcpForwarding no
-    AuthorizedKeysFile /authorized_keys/%u
-    PubkeyAuthentication yes
-    PasswordAuthentication no
+    AllowTcpForwarding yes
+    AuthorizedKeysFile /chroots/%u/home/%u/.ssh/authorized_keys

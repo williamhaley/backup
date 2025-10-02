@@ -3,25 +3,30 @@ package config
 import (
 	"flag"
 	"os"
+	"strconv"
 
 	"github.com/goccy/go-yaml"
 )
 
 type Config struct {
-	Destination    string   `yaml:"destination"`
-	DestinationKey string   `yaml:"destination_key"`
-	Sources        []string `yaml:"sources"`
+	Name    string   `yaml:"name"`
+	Address string   `yaml:"address"`
+	Key     string   `yaml:"key"`
+	Sources []string `yaml:"sources"`
 
-	isVerbose bool
-	isDryRun  bool
+	isValidation bool
+	isVerbose    bool
+	isDryRun     bool
 }
 
 var configFilePath string
+var isValidation bool
 var isVerbose bool
 var isDryRun bool
 
 func init() {
 	flag.StringVar(&configFilePath, "config", "/etc/backup/backup.yaml", "path to config file")
+	flag.BoolVar(&isValidation, "validate", false, "validate config")
 	flag.BoolVar(&isVerbose, "verbose", false, "verbose logging")
 	flag.BoolVar(&isDryRun, "dry-run", false, "dry run without any actual backing up")
 }
@@ -41,22 +46,31 @@ func New() *Config {
 		panic(err)
 	}
 
-	if c.Destination == "" {
-		panic("destination not defined")
+	if c.Name == "" {
+		panic("name not defined")
 	}
 
-	if c.DestinationKey == "" {
-		panic("destination_key not defined")
+	if c.Address == "" {
+		panic("address not defined")
+	}
+
+	if c.Key == "" {
+		panic("key not defined")
 	}
 
 	if len(c.Sources) < 1 {
 		panic("no sources defined")
 	}
 
+	c.isValidation = isValidation
 	c.isDryRun = isDryRun
 	c.isVerbose = isVerbose
 
 	return &c
+}
+
+func (c *Config) IsValidation() bool {
+	return isValidation
 }
 
 func (c *Config) IsDryRun() bool {
@@ -65,4 +79,8 @@ func (c *Config) IsDryRun() bool {
 
 func (c *Config) IsVerbose() bool {
 	return isVerbose
+}
+
+func (c *Config) Port() string {
+	return strconv.Itoa(49152)
 }

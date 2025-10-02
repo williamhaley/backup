@@ -8,6 +8,7 @@ import (
 	"github.com/williamhaley/backup/config"
 	"github.com/williamhaley/backup/filters"
 	"github.com/williamhaley/backup/rsync"
+	"github.com/williamhaley/backup/ssh"
 )
 
 func main() {
@@ -18,6 +19,15 @@ func main() {
 	}
 
 	config := config.New()
+
+	// TODO Always do this? No flag?
+	if config.IsValidation() {
+		if err := ssh.Test(config); err != nil {
+			panic(err)
+		}
+		println("OK")
+		os.Exit(0)
+	}
 
 	filters := filters.NewFilters()
 	for _, source := range config.Sources {

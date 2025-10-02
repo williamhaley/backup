@@ -4,7 +4,7 @@ Semi-complicated scripts, applications, and other helpers used for backing up my
 
 # Install
 
-## Go
+## With Go
 
 ```
 sudo GOBIN=/usr/local/bin go install -v github.com/williamhaley/backup/cmd/backup@latest
@@ -29,7 +29,7 @@ make test
 
 Config files should be located at `/etc/backup/...` and named with a `yaml` extension. See `backup.yaml.sample` as a reference.
 
-Generate an SSH backup key with `ssh-keygen`. Move the generated files to `/etc/backup`. Reference the private key with the `destination_key` config parameter.
+Generate an SSH backup key with `ssh-keygen`. Move the generated files to `/etc/backup`. Reference the private key with the `key` config parameter.
 
 ## Server
 
@@ -40,7 +40,7 @@ Build and deploy the `Dockerfile`, which will automatically generate users and `
 ```
 docker build . -t backup-server
 docker run \
-    -p 2222:22 \
+    -p 49152:49152 \
     --name backup-server \
     --hostname backup-server \
     -v /my/persistent/storage/directory:/backups \

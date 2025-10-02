@@ -1,5 +1,6 @@
-destination: <backup-name>@<backup-server>:/
-destination_key: /etc/backup/backup.key
+name: <backup-name>
+address: <backup-server>
+key: /etc/backup/backup.key
 
 sources:
     - /etc
