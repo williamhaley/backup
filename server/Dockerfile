@@ -1,77 +1,56 @@
-FROM debian:latest AS chroot-builder
+FROM debian:13.1 AS chroot-builder
 
-RUN apt-get update && apt-get install -y python3 sudo rsync
+RUN apt-get update && apt-get install -y ca-certificates
 
-RUN <<EOF
-#!/usr/bin/env bash
-set -e
+# https://wiki.alpinelinux.org/wiki/Alpine_Linux_in_a_chroot
+ADD https://gitlab.alpinelinux.org/api/v4/projects/5/packages/generic//v2.14.10/x86_64/apk.static /chroot-template/sbin/apk
+RUN chmod +x /chroot-template/sbin/apk
+RUN /chroot-template/sbin/apk \
+    --repository https://dl-cdn.alpinelinux.org/alpine/latest-stable/main \
+    --repository https://dl-cdn.alpinelinux.org/alpine/latest-stable/community \
+    -U \
+    --allow-untrusted \
+    --root /chroot-template \
+    --initdb \
+    add alpine-base rsync shadow sudo rrsync
 
-function cp_app()
-{
-    app="${1}"
-    is_link=false
-
-    if [ -L "$(which "${1}")" ]
-    then
-        app="$(basename "$(readlink -f "$(which "${1}")")")"
-        echo "'${1}' is a symbolic link. using "${app}" instead"
-        is_link=true
-    fi
-
-    full_path="$(which "${app}")"
-    base_path="$(dirname "${full_path}")"
-    mkdir -p "/chroot-template/${base_path}"
-
-    cp --preserve=mode,ownership,timestamps "${base_path}/${app}" "/chroot-template/${base_path}/"
-
-    full_path="$(which "${app}")"
-    libs="$(ldd "${full_path}" | awk '{print $3}' | grep -v '^$' | sort -u)"
-    for lib in $libs
-    do
-        cp -L --parents "${lib}" /chroot-template
-    done
-
-    ld_linux="$(ldd "${full_path}" | grep "ld-linux" | awk '{print $1}')"
-    if [ -n "${ld_linux}" ]
-    then
-        cp -L --parents "${ld_linux}" /chroot-template
-    fi
-
-    ld_linux_64="$(ldd "${full_path}" | grep "ld-linux" | awk '{print $1}' | grep "64")"
-    if [ -n "${ld_linux_64}" ]
-    then
-        cp -L --parents "${ld_linux_64}" /chroot-template
-    fi
-
-    if [ "${is_link}" == "true" ]
-    then
-        ln -s "${full_path}" /chroot-template/"$(which "${1}")"
-    fi
-}
-
-mkdir -p /chroot-template/{bin,etc,lib,lib64}
-
-cp_app sh
-cp_app bash
-cp_app ls
-cp_app rsync
-cp_app sudo
-cp_app python3
-cp_app groupadd
-cp_app useradd
-cp_app passwd
-cp_app id
-cp_app su
-cp_app whoami
-
-ln -s "$(readlink -f "$(which sh)")" /chroot-template/bin/sh
-
-cp /etc/sudoers /chroot-template/etc/
-cp /etc/sudo.conf /chroot-template/etc/
-mkdir /chroot-template/etc/sudoers.d
+COPY <<EOF /chroot-template/etc/apk/repositories
+https://dl-cdn.alpinelinux.org/alpine/v3.22/main
+https://dl-cdn.alpinelinux.org/alpine/v3.22/community
 EOF
 
-FROM debian:latest
+COPY <<EOF /chroot-template/etc/hosts
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+EOF
+
+COPY <<EOF /chroot-template/etc/sudoers.d/rrsync
+Defaults!/usr/bin/rrsync env_keep += "SSH_ORIGINAL_COMMAND"
+%backup-client ALL = (ALL) NOPASSWD: /usr/bin/rrsync
+EOF
+
+COPY <<EOF /chroot-template/etc/sudoers.d/rsync
+%backup-client ALL = (ALL) NOPASSWD: /usr/bin/rsync
+EOF
+
+COPY <<EOF /chroot-template/etc/sudoers.d/whoami
+%backup-client ALL = (ALL) NOPASSWD: /usr/bin/whoami
+EOF
+
+# COPY ./copy-app.sh /usr/local/bin/
+# RUN copy-app.sh sh
+# RUN copy-app.sh mkdir
+# RUN copy-app.sh cat
+# RUN copy-app.sh bash
+# RUN copy-app.sh ls
+# RUN copy-app.sh rsync
+# RUN cp /usr/bin/rrsync /chroot-template/usr/bin/
+# RUN copy-app.sh python3
+# RUN copy-app.sh groupadd
+# RUN copy-app.sh useradd
+# RUN copy-app.sh su
+
+FROM debian:13.1
 
 RUN apt-get update && apt-get install -y openssh-server openssl python3 rsync
 

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import os
 import subprocess
 import sys
 import tomllib
@@ -23,11 +22,6 @@ with open(config_file_path, "rb") as config_file:
         if result.returncode != 0:
             print(f"error allocating backup for: '{name}'")
             sys.exit(1)
-
-        # with open(f'/chroots/{name}/etc/sudoers.d/rrsync', 'w') as sudoers_file:
-        #     sudoers_file.write(f'Defaults!/usr/bin/rrsync env_keep += "SSH_ORIGINAL_COMMAND"\n')
-        #     sudoers_file.write(f'{name} ALL = (ALL) NOPASSWD: /usr/bin/rrsync\n')
-        #     sudoers_file.write(f'{name} ALL = (ALL) NOPASSWD: /usr/bin/rsync\n')
 
 result = subprocess.run(["/usr/sbin/sshd", "-p", "49152", "-D", "-e"])
 if result.returncode != 0:

@@ -1,3 +1,3 @@
 [[backups]]
 name = "my-backup"
-key = "command=\"/usr/bin/sudo /usr/bin/rrsync -wo /backup\" <ssh public key>"
+key = "<ssh public key>"

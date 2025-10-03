@@ -16,6 +16,7 @@ func Test(config *config.Config) error {
 		"-o", "IdentityAgent=none",
 		"-o", "UserKnownHostsFile=/dev/null",
 		fmt.Sprintf("%s@%s", config.Name, config.Address),
+		"whoami",
 	}
 
 	cmd := exec.Command("ssh", args...)
