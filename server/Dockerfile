@@ -28,7 +28,11 @@ EOF
 
 COPY <<EOF /chroot-template/etc/sudoers.d/rrsync
 Defaults!/usr/bin/rrsync env_keep += "SSH_ORIGINAL_COMMAND"
-%backup-client ALL = (ALL) NOPASSWD: /usr/bin/rrsync
+%sudo ALL = (ALL) NOPASSWD: /usr/bin/rrsync
+EOF
+
+RUN bash <<EOF
+chroot /chroot-template groupadd sudo
 EOF
 
 # COPY ./copy-app.sh /usr/local/bin/

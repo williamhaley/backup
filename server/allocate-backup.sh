@@ -9,16 +9,16 @@ group_name="backup-client"
 echo "allocating backup config: '${name}'"
 
 mkdir -p "/chroots/${name}"
-
 rsync -ar /chroot-template/ "/chroots/${name}/"
 
 # Create the destination mount point we will bind from persistent storage.
 mkdir -p "/chroots/${name}/backup"
 
-useradd --create-home --groups "${group_name}" "${name}"
+# User must exist in ${group_name} on the sshd server in order to authenticate.
+useradd --no-create-home --groups "${group_name}" "${name}"
 
-chroot "/chroots/${name}" groupadd "${group_name}"
-chroot "/chroots/${name}" useradd --create-home --groups "${group_name}" "${name}"
+uid="$(id -u "${name}")"
+chroot "/chroots/${name}" useradd --uid "${uid}" --create-home "${name}"
 
 mount --bind "/backups/${name}" "/chroots/${name}/backup"
 
