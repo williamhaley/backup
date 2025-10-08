@@ -8,3 +8,4 @@ Match Group backup-client
     X11Forwarding no
     AllowTcpForwarding yes
     AuthorizedKeysFile /chroots/%u/home/%u/.ssh/authorized_keys
+    ForceCommand /usr/local/bin/only.sh

@@ -20,12 +20,10 @@ func main() {
 
 	config := config.New()
 
-	// TODO Always do this? No flag?
 	if config.IsValidation() {
 		if err := ssh.Test(config); err != nil {
 			panic(err)
 		}
-		println("OK")
 		os.Exit(0)
 	}
 

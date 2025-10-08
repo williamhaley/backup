@@ -14,6 +14,8 @@ RUN /chroot-template/sbin/apk \
     --initdb \
     add alpine-base rsync shadow sudo rrsync
 
+COPY only.sh /chroot-template/usr/local/bin/
+
 COPY <<EOF /chroot-template/etc/apk/repositories
 https://dl-cdn.alpinelinux.org/alpine/v3.22/main
 https://dl-cdn.alpinelinux.org/alpine/v3.22/community
@@ -27,14 +29,6 @@ EOF
 COPY <<EOF /chroot-template/etc/sudoers.d/rrsync
 Defaults!/usr/bin/rrsync env_keep += "SSH_ORIGINAL_COMMAND"
 %backup-client ALL = (ALL) NOPASSWD: /usr/bin/rrsync
-EOF
-
-COPY <<EOF /chroot-template/etc/sudoers.d/rsync
-%backup-client ALL = (ALL) NOPASSWD: /usr/bin/rsync
-EOF
-
-COPY <<EOF /chroot-template/etc/sudoers.d/whoami
-%backup-client ALL = (ALL) NOPASSWD: /usr/bin/whoami
 EOF
 
 # COPY ./copy-app.sh /usr/local/bin/

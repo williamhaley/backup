@@ -15,12 +15,14 @@ func Test(config *config.Config) error {
 		"-o", "StrictHostKeychecking=no",
 		"-o", "IdentityAgent=none",
 		"-o", "UserKnownHostsFile=/dev/null",
+		"-T",
 		fmt.Sprintf("%s@%s", config.Name, config.Address),
-		"whoami",
 	}
 
 	cmd := exec.Command("ssh", args...)
-	println(cmd.String())
+	if config.IsVerbose() {
+		println(cmd.String())
+	}
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 

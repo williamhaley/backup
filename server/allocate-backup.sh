@@ -22,14 +22,12 @@ chroot "/chroots/${name}" useradd --create-home --groups "${group_name}" "${name
 
 mount --bind "/backups/${name}" "/chroots/${name}/backup"
 
-mkdir -p "/chroots/${name}/home/${name}/.ssh"
-
-# This is how a user gets restricted to a specific command.
-printf 'command="/usr/bin/sudo /usr/bin/rrsync -wo /backup" %s\n' "${key}" > "/chroots/${name}/home/${name}/.ssh/authorized_keys"
-# Allow a user to log in without restrictions and then run any command.
-# printf '%s\n' "${key}" > "/chroots/${name}/home/${name}/.ssh/authorized_keys"
-
 touch "/chroots/${name}/home/${name}/.hushlogin"
+
+mkdir -p "/chroots/${name}/home/${name}/.ssh"
+# Option for per-user restrictions instead of ForceCommand.
+# printf 'command="/usr/local/bin/only.sh" %s\n' "${key}" > "/chroots/${name}/home/${name}/.ssh/authorized_keys"
+printf '%s\n' "${key}" > "/chroots/${name}/home/${name}/.ssh/authorized_keys"
 chmod 700 "/chroots/${name}/home/${name}/.ssh"
 chmod 500 "/chroots/${name}/home/${name}/.ssh/authorized_keys"
 
