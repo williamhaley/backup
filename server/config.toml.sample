@@ -1,3 +1,4 @@
 [[backups]]
+uuid = "abcde12345"
 name = "my-backup"
 key = "<ssh public key>"

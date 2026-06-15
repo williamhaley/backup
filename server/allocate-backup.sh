@@ -27,8 +27,6 @@ mount --bind "/backups/${uuid}" "/chroots/${uuid}/backup"
 touch "/chroots/${uuid}/home/${uuid}/.hushlogin"
 
 mkdir -p "/chroots/${uuid}/home/${uuid}/.ssh"
-# Option for per-user restrictions instead of ForceCommand.
-# printf 'command="/usr/local/bin/only.sh" %s\n' "${key}" > "/chroots/${name}/home/${name}/.ssh/authorized_keys"
 printf '%s\n' "${key}" > "/chroots/${uuid}/home/${uuid}/.ssh/authorized_keys"
 chmod 700 "/chroots/${uuid}/home/${uuid}/.ssh"
 chmod 500 "/chroots/${uuid}/home/${uuid}/.ssh/authorized_keys"

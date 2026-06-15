@@ -31,6 +31,14 @@ Config files should be located at `/etc/backup/...` and named with a `yaml` exte
 
 Generate an SSH backup key with `ssh-keygen`. Move the generated files to `/etc/backup`. Reference the private key with the `key` config parameter.
 
+See [backup-cron.sh](backup-cron.sh) for an example where the backup job is run in the background via `cron`.
+
+A typical backup scheduled (for the `root` user at this time) might look like so.
+
+```
+0 */4 * * * /usr/local/bin/backup-cron.sh
+```
+
 ## Server
 
 Create a `config.toml` file in the `server` directory. Use `config.toml.sample` as a guide.
@@ -52,3 +60,9 @@ docker run \
 # Backup of Backups
 
 The backups should all be backed up! Use `rsync` or whatever you like to make sure all the backups used by the server are backed up.
+
+If using `btrfs` daily snapshots of backups could be created using something like [snapshot.sh](snapshot.sh) and a `cron` entry like so.
+
+```
+0 6 * * * /usr/local/bin/snapshot.sh
+```

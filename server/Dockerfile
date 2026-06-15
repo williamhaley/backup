@@ -38,19 +38,6 @@ RUN bash <<EOF
 chroot /chroot-template groupadd sudo
 EOF
 
-# COPY ./copy-app.sh /usr/local/bin/
-# RUN copy-app.sh sh
-# RUN copy-app.sh mkdir
-# RUN copy-app.sh cat
-# RUN copy-app.sh bash
-# RUN copy-app.sh ls
-# RUN copy-app.sh rsync
-# RUN cp /usr/bin/rrsync /chroot-template/usr/bin/
-# RUN copy-app.sh python3
-# RUN copy-app.sh groupadd
-# RUN copy-app.sh useradd
-# RUN copy-app.sh su
-
 FROM debian:13.5
 
 RUN apt-get update && apt-get install -y openssh-server openssl python3 rsync

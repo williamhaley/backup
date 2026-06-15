@@ -1,3 +1,4 @@
+uuid: <uuid>
 name: <backup-name>
 address: <backup-server>
 key: /etc/backup/backup.key
