@@ -15,12 +15,13 @@ subprocess.run(["groupadd", group_name])
 with open(config_file_path, "rb") as config_file:
     data = tomllib.load(config_file)
     for backup in data['backups']:
+        uuid = backup['uuid']
         name = backup['name']
         key = backup['key']
 
-        result = subprocess.run(["/usr/local/bin/allocate-backup.sh", name, key])
+        result = subprocess.run(["/usr/local/bin/allocate-backup.sh", uuid, name, key])
         if result.returncode != 0:
-            print(f"error allocating backup for: '{name}'")
+            print(f"error allocating backup for: '{name} ({uuid})'")
             sys.exit(1)
 
 result = subprocess.run(["/usr/sbin/sshd", "-p", "49152", "-D", "-e"])

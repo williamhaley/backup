@@ -9,6 +9,7 @@ import (
 )
 
 type Config struct {
+	UUID    string   `yaml:"uuid"`
 	Name    string   `yaml:"name"`
 	Address string   `yaml:"address"`
 	Key     string   `yaml:"key"`
@@ -44,6 +45,10 @@ func New() *Config {
 	decoder := yaml.NewDecoder(file)
 	if err := decoder.Decode(&c); err != nil {
 		panic(err)
+	}
+
+	if c.UUID == "" {
+		panic("uuid not defined")
 	}
 
 	if c.Name == "" {

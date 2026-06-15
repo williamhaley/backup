@@ -1,9 +1,12 @@
-FROM debian:13.1 AS chroot-builder
+FROM debian:13.5 AS chroot-builder
 
 RUN apt-get update && apt-get install -y ca-certificates
 
+ARG APK_ARCH
+ARG ALPINE_VERSION
+
 # https://wiki.alpinelinux.org/wiki/Alpine_Linux_in_a_chroot
-ADD https://gitlab.alpinelinux.org/api/v4/projects/5/packages/generic//v2.14.10/x86_64/apk.static /chroot-template/sbin/apk
+ADD https://gitlab.alpinelinux.org/api/v4/projects/5/packages/generic/v3.0.6/${APK_ARCH}/apk.static /chroot-template/sbin/apk
 RUN chmod +x /chroot-template/sbin/apk
 RUN /chroot-template/sbin/apk \
     --repository https://dl-cdn.alpinelinux.org/alpine/latest-stable/main \
@@ -12,13 +15,13 @@ RUN /chroot-template/sbin/apk \
     --allow-untrusted \
     --root /chroot-template \
     --initdb \
-    add alpine-base rsync shadow sudo rrsync
+    add alpine-base shadow sudo rsync rrsync
 
 COPY only.sh /chroot-template/usr/local/bin/
 
 COPY <<EOF /chroot-template/etc/apk/repositories
-https://dl-cdn.alpinelinux.org/alpine/v3.22/main
-https://dl-cdn.alpinelinux.org/alpine/v3.22/community
+https://dl-cdn.alpinelinux.org/alpine/${ALPINE_VERSION}/main
+https://dl-cdn.alpinelinux.org/alpine/${ALPINE_VERSION}/community
 EOF
 
 COPY <<EOF /chroot-template/etc/hosts
@@ -48,14 +51,13 @@ EOF
 # RUN copy-app.sh useradd
 # RUN copy-app.sh su
 
-FROM debian:13.1
+FROM debian:13.5
 
 RUN apt-get update && apt-get install -y openssh-server openssl python3 rsync
 
 COPY --from=chroot-builder /chroot-template /chroot-template
 
 COPY sshd_config /etc/ssh/sshd_config.d/backups.conf
-COPY config.toml /config.toml
 COPY cmd.py /usr/local/bin/
 COPY allocate-backup.sh /usr/local/bin/
 

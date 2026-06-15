@@ -14,13 +14,14 @@ var _ = func() bool {
 
 func TestGeneratingAnEmptyRsyncCommand(t *testing.T) {
 	config := &config.Config{
+		UUID:    "abcde12345",
 		Name:    "my-backup",
 		Address: "server-address",
 		Key:     "/some/ssh/key/file",
 	}
 	command := rsync.Command(config, "/my/filters/file")
 
-	want := `/usr/bin/rsync --archive --recursive --delete --delete-excluded -e ssh -p 49152 -i /some/ssh/key/file -o "StrictHostKeychecking=no" -o "IdentityAgent=none" -o "UserKnownHostsFile=/dev/null" --filter merge /my/filters/file / my-backup@server-address:/`
+	want := `/usr/bin/rsync --archive --recursive --delete --delete-excluded -e ssh -p 49152 -i /some/ssh/key/file -o "StrictHostKeychecking=no" -o "IdentityAgent=none" -o "UserKnownHostsFile=/dev/null" --filter merge /my/filters/file / abcde12345@server-address:/backup/`
 	got := command.String()
 	if want != got {
 		t.Errorf(`Command() = %q, want == for %q`, got, want)

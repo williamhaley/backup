@@ -30,7 +30,7 @@ func Command(config *config.Config, filtersFilePath string) *exec.Cmd {
 
 	args = append(args, "--filter", fmt.Sprintf("merge %s", filtersFilePath))
 
-	args = append(args, "/", fmt.Sprintf("%s@%s:/", config.Name, config.Address))
+	args = append(args, "/", fmt.Sprintf("%s@%s:/backup/", config.UUID, config.Address))
 
 	return exec.Command(rsync, args...)
 }

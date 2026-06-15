@@ -38,12 +38,13 @@ Create a `config.toml` file in the `server` directory. Use `config.toml.sample` 
 Build and deploy the `Dockerfile`, which will automatically generate users and `chroot` directories based on the configuration TOML file.
 
 ```
-docker build . -t backup-server
+docker build --build-arg APK_ARCH=aarch64 --build-arg ALPINE_VERSION=v3.22 . -t backup-server
 docker run \
     -p 49152:49152 \
     --name backup-server \
     --hostname backup-server \
     -v /my/persistent/storage/directory:/backups \
+    -v /path/to/config.toml:/config.toml:ro \
     --privileged=true `# Needed for bind mounts` \
     backup-server
 ```
